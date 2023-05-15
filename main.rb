@@ -14,6 +14,7 @@ class Tree
   def initialize(array)
     @data = array.sort.uniq
     @root = build_tree(data)
+    @arr = []
   end
 
   def build_tree(array)
@@ -66,12 +67,7 @@ class Tree
   def find(value, node = root)
     return node if node.nil? || node.data == value
 
-    if value < node.data
-      node.left = find(value, node.left)
-    else
-      node.right = find(value, node.right)
-    end
-    node
+    value < node.data ? find(value, node.left) : find(value, node.right)
   end
 
   def level_order(node = root)
@@ -140,6 +136,21 @@ class Tree
     return list if !block_given? && node == root
   end
 
+  def height(node)
+    @arr.clear
+    height_r(node)
+    @arr.max
+  end
+
+  def height_r(node = root, i = 0)
+    return if node.nil?
+
+    lnode = height_r(node.left, i + 1)
+    rnode = height_r(node.right, i + 1)
+    @arr << i
+    node
+  end
+
   # Prints the node tree
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
@@ -148,10 +159,10 @@ class Tree
   end
 end
 
-list = [1, 3, 2, 0, 4, 5, 8, 7, 10, 12, 13, 11]
+list = [1, 3, 2, 0, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16]
 
 bst = Tree.new(list)
 
 bst.pretty_print
-
-bst.post_order { |number| puts number.data * 2 }
+bst.height(bst.find(3))
+# bst.post_order { |number| puts number.data * 2 }

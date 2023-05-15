@@ -74,6 +74,26 @@ class Tree
     node
   end
 
+  def level_order(node = root)
+    return if node.nil?
+
+    queue = []
+    list = []
+    queue << node
+    until queue.empty?
+      current = queue[0]
+      list << current.data
+      yield current if block_given?
+      queue << current.left unless current.left.nil?
+      queue << current.right unless current.right.nil?
+      queue.shift
+    end
+    return list unless block_given?
+  end
+
+  # queue root node first FIFO
+  # prints enque left child, right child
+
   # Prints the node tree
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
@@ -86,5 +106,6 @@ list = [1, 3, 2, 0, 4, 5, 8, 7, 10, 12, 13, 11]
 
 bst = Tree.new(list)
 
-bst.find(2)
 bst.pretty_print
+
+bst.level_order { |number| puts number.data * 10 }

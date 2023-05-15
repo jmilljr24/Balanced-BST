@@ -1,10 +1,10 @@
 class Node
-  attr_accessor :data, :left_child, :right_child
+  attr_accessor :data, :left, :right
 
-  def initialize(data, left_child = nil, right_child = nil)
+  def initialize(data)
     @data = data
-    @left_child = left_child
-    @right_child = right_child
+    @left = nil
+    @right = nil
   end
 end
 
@@ -17,12 +17,24 @@ class Tree
   end
 
   def build_tree(array)
+    return nil if array.empty?
+
     mid = (array.size - 1) / 2
     root_node = Node.new(array[mid])
-    p root_node
+    root_node.left = build_tree(array[0...mid])
+    root_node.right = build_tree(array[(mid + 1)..-1])
+
+    root_node
+  end
+
+  def pretty_print(node = @root, prefix = '', is_left = true)
+    pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
+    puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
+    pretty_print(node.left, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left
   end
 end
 
-list = [1, 10, 4, 5, 6, 5, 8, 2, 12]
+list = [1, 3, 4, 5, 2, 18, 12, 6, 4, 8, 7]
 
 bst = Tree.new(list)
+bst.pretty_print

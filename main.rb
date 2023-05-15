@@ -91,8 +91,54 @@ class Tree
     return list unless block_given?
   end
 
-  # queue root node first FIFO
-  # prints enque left child, right child
+  def pre_order(node = root, &block)
+    list = []
+    return if node.nil?
+
+    if block_given?
+      yield node
+      pre_order(node.left, &block)
+      pre_order(node.right, &block)
+
+    else
+      list << node.data
+      pre_order(node.left)
+      pre_order(node.right)
+    end
+    return list if !block_given? && node == root
+  end
+
+  def in_order(node = root, &block)
+    list = []
+    return if node.nil?
+
+    if block_given?
+      in_order(node.left, &block)
+      yield node
+      in_order(node.right, &block)
+    else
+      in_order(node.left)
+      list << node.data
+      in_order(node.right)
+    end
+    return list if !block_given? && node == root
+  end
+
+  def post_order(node = root, &block)
+    list = []
+    return if node.nil?
+
+    if block_given?
+      post_order(node.left, &block)
+      post_order(node.right, &block)
+      yield node
+    else
+      post_order(node.left)
+      post_order(node.right)
+      list << node.data
+    end
+    return list if !block_given? && node == root
+  end
 
   # Prints the node tree
   def pretty_print(node = @root, prefix = '', is_left = true)
@@ -108,4 +154,4 @@ bst = Tree.new(list)
 
 bst.pretty_print
 
-bst.level_order { |number| puts number.data * 10 }
+bst.post_order { |number| puts number.data * 2 }

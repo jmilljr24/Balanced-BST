@@ -39,6 +39,41 @@ class Tree
     end
   end
 
+  def delete(value, node = root)
+    return node if node.nil?
+
+    if value < node.data # move left
+      node.left = delete(value, node.left)
+    elsif value > node.data # move right
+      node.right = delete(value, node.right)
+    else # one or no child
+      return node.left if node.right.nil?
+      return node.right if node.left.nil?
+
+      # two children
+      key = left_most(node.right)
+      node.data = key.data
+      node.right = delete(key.data, node.right)
+    end
+    node
+  end
+
+  def left_most(node)
+    node = node.left until node.left.nil?
+    node
+  end
+
+  def find(value, node = root)
+    return node if node.nil? || node.data == value
+
+    if value < node.data
+      node.left = find(value, node.left)
+    else
+      node.right = find(value, node.right)
+    end
+    node
+  end
+
   # Prints the node tree
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
@@ -47,9 +82,9 @@ class Tree
   end
 end
 
-list = [1, 3, 4, 5, 2, 18, 12, 6, 4, 8, 7]
+list = [1, 3, 2, 0, 4, 5, 8, 7, 10, 12, 13, 11]
 
 bst = Tree.new(list)
 
-bst.insert(9)
+bst.find(2)
 bst.pretty_print

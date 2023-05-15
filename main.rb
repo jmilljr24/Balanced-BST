@@ -151,6 +151,17 @@ class Tree
     node
   end
 
+  def depth(node = root, key)
+    return -1 if node.nil?
+
+    dist = -1
+    if node.data == key || (dist = depth(node.left, key)) >= 0 || (dist = depth(node.right, key)) >= 0
+      return dist + 1
+    end
+
+    dist
+  end
+
   # Prints the node tree
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
@@ -164,5 +175,5 @@ list = [1, 3, 2, 0, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16]
 bst = Tree.new(list)
 
 bst.pretty_print
-bst.height(bst.find(3))
+bst.depth(bst.find(3))
 # bst.post_order { |number| puts number.data * 2 }

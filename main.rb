@@ -87,8 +87,7 @@ class Tree
     return list unless block_given?
   end
 
-  def pre_order(node = root, &block)
-    list = []
+  def pre_order(node = root, list = [], &block)
     return if node.nil?
 
     if block_given?
@@ -98,14 +97,13 @@ class Tree
 
     else
       list << node.data
-      pre_order(node.left)
-      pre_order(node.right)
+      pre_order(node.left, list)
+      pre_order(node.right, list)
     end
     return list if !block_given? && node == root
   end
 
-  def in_order(node = root, &block)
-    list = []
+  def in_order(node = root, list = [], &block)
     return if node.nil?
 
     if block_given?
@@ -113,15 +111,14 @@ class Tree
       yield node
       in_order(node.right, &block)
     else
-      in_order(node.left)
+      in_order(node.left, list)
       list << node.data
-      in_order(node.right)
+      in_order(node.right, list)
     end
     return list if !block_given? && node == root
   end
 
-  def post_order(node = root, &block)
-    list = []
+  def post_order(node = root, list = [], &block)
     return if node.nil?
 
     if block_given?
@@ -129,8 +126,8 @@ class Tree
       post_order(node.right, &block)
       yield node
     else
-      post_order(node.left)
-      post_order(node.right)
+      post_order(node.left, list)
+      post_order(node.right, list)
       list << node.data
     end
     return list if !block_given? && node == root
@@ -166,6 +163,10 @@ class Tree
     balanced?(node.left) && balanced?(node.right)
   end
 
+  def rebalance
+    @root = build_tree(level_order)
+  end
+
   # Prints the node tree
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
@@ -174,10 +175,33 @@ class Tree
   end
 end
 
-list = [1, 3, 2, 0, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16]
+# list = [1, 3, 2, 0, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16]
 
-bst = Tree.new(list)
+tree = Tree.new(Array.new(15) { rand(1..100) })
+tree.pretty_print
 
-bst.pretty_print
-p bst.balanced?
-# bst.post_order { |number| puts number.data * 2 }
+puts "Balanced?: #{tree.balanced?}" # return false
+
+puts "Level order: #{tree.level_order}"
+puts "Preorder: #{tree.pre_order}"
+puts "Inorder: #{tree.in_order}"
+puts "Postorder: #{tree.post_order}"
+
+tree.insert(101)
+tree.insert(105)
+tree.insert(109)
+tree.insert(110)
+puts 'Inserting 101, 105, 109, 110'
+puts "Balanced?: #{tree.balanced?}" # return false
+
+tree.pretty_print
+
+tree.rebalance
+puts 'Rebalancing...'
+puts "Balanced?: #{tree.balanced?}" # return true
+
+tree.pretty_print
+puts "Level order: #{tree.level_order}"
+puts "Preorder: #{tree.pre_order}"
+puts "Inorder: #{tree.in_order}"
+puts "Postorder: #{tree.post_order}"

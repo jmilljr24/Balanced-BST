@@ -16,4 +16,4 @@ This is a Ruby Balanced Binary Search Tree
 | #height       | Accepts node and returns height                                                     |
 | #depth        | Accepts node and returns depth                                                      |
 | #balance?     | Returns true if tree is balanced                                                    |
-| #rebalnce     | Rebalance tree                                                                      |
+| #rebalance    | Rebalance tree                                                                      |

@@ -136,19 +136,12 @@ class Tree
     return list if !block_given? && node == root
   end
 
-  def height(node)
-    @arr.clear
-    height_r(node)
-    @arr.max
-  end
+  def height(node = root)
+    return -1 if node.nil?
 
-  def height_r(node = root, i = 0)
-    return if node.nil?
-
-    lnode = height_r(node.left, i + 1)
-    rnode = height_r(node.right, i + 1)
-    @arr << i
-    node
+    left_height = height(node.left)
+    right_height = height(node.right)
+    left_height > right_height ? left_height + 1 : right_height + 1
   end
 
   def depth(node = root, key)
@@ -160,6 +153,17 @@ class Tree
     end
 
     dist
+  end
+
+  def balanced?(node = root)
+    return true if node.nil?
+
+    lh = height(node.left)
+    rh = height(node.right)
+
+    return false if (lh - rh).abs > 1
+
+    balanced?(node.left) && balanced?(node.right)
   end
 
   # Prints the node tree
@@ -175,5 +179,5 @@ list = [1, 3, 2, 0, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16]
 bst = Tree.new(list)
 
 bst.pretty_print
-bst.depth(bst.find(3))
+p bst.balanced?
 # bst.post_order { |number| puts number.data * 2 }

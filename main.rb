@@ -175,8 +175,6 @@ class Tree
   end
 end
 
-# list = [1, 3, 2, 0, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16]
-
 tree = Tree.new(Array.new(15) { rand(1..100) })
 tree.pretty_print
 
